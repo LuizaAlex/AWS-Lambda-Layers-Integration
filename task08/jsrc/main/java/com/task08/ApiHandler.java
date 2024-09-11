@@ -22,6 +22,7 @@ import com.task08.OpenMeteoClient;
 @LambdaHandler(
     lambdaName = "api_handler",
 	roleName = "api_handler-role",
+	layers = {"open-meteo-layer"},
 	isPublishVersion = false,
 	logsExpiration = RetentionSetting.SYNDICATE_ALIASES_SPECIFIED
 )

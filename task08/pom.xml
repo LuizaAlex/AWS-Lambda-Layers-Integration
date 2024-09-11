@@ -33,20 +33,22 @@
         </dependency>
 
 
+    
+        <!--Custom dependencies-->
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpclient</artifactId>
-            <version>4.5.13</version>
-            <scope> system </scope>
-            <systemPath>${basedir}/lib/httpclient-4.5.13.jar</systemPath>
+            <groupId>com.google.code.gson</groupId>
+            <artifactId>gson</artifactId>
+            <version>2.11.0</version>
         </dependency>
         <dependency>
-            <groupId>org.apache.httpcomponents</groupId>
-            <artifactId>httpcore</artifactId>
-            <version>4.4.14</version>
-               <scope> system </scope>
-            <systemPath>${basedir}/lib/httpcore-4.4.14.jar</systemPath>
+            <groupId>com.openmeteo.api</groupId>
+            <artifactId>open-meteo-api</artifactId>
+            <version>1.0</version>
+            <scope>system</scope>
+            <systemPath>${basedir}/libs/open-meteo-api.jar</systemPath>
         </dependency>
+
+
     </dependencies>
 
     <build>
