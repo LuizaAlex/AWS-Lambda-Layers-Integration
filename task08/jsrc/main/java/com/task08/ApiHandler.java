@@ -1,6 +1,7 @@
 package com.task08;
 
 import com.amazonaws.services.lambda.runtime.Context;
+import com.amazonaws.services.lambda.runtime.LambdaLogger;
 import com.amazonaws.services.lambda.runtime.RequestHandler;
 import com.syndicate.deployment.annotations.lambda.LambdaHandler;
 import com.syndicate.deployment.annotations.lambda.LambdaLayer;
@@ -11,7 +12,9 @@ import com.syndicate.deployment.model.DeploymentRuntime;
 import com.syndicate.deployment.model.RetentionSetting;
 import com.syndicate.deployment.model.lambda.url.AuthType;
 import com.syndicate.deployment.model.lambda.url.InvokeMode;
-
+import com.openmeteo.api.OpenMeteoApi;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPEvent;
+import com.amazonaws.services.lambda.runtime.events.APIGatewayV2HTTPResponse;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -37,25 +40,46 @@ import com.task08.OpenMeteoClient;
     authType = AuthType.NONE,
     invokeMode = InvokeMode.BUFFERED
 )
-public class ApiHandler implements RequestHandler<Object, Map<String, Object>> {
+public class ApiHandler implements RequestHandler<APIGatewayV2HTTPEvent, APIGatewayV2HTTPResponse> {
+	private static final String OK_METHOD = "GET";
+	private static final String OK_PATH = "/weather";
+	private static final int SC_OK = 200;
+	private static final int SC_NOT_FOUND = 404;
+	private static final int SC_INTERNAL_SERVER_ERROR = 500;
+	private final Map<String, String> responseHeaders = Map.of("Content-Type", "application/json");
 
-    @Override
-	public Map<String, Object> handleRequest(Object request, Context context) {
-		OpenMeteoClient client = new OpenMeteoClient();
-		Map<String, Object> resultMap = new HashMap<>();
-		
-		try {
-			// Fetch weather forecast from the OpenMeteo API
-			String forecast = client.fetchWeather();
-			resultMap.put("statusCode", 200);
-			resultMap.put("body", forecast);
-		} catch (Exception e) {
-			// Log the exception and return an error response
-			context.getLogger().log("Error fetching weather forecast: " + e.getMessage());
-			resultMap.put("statusCode", 500);
-			resultMap.put("body", "Error fetching weather forecast");
+	public APIGatewayV2HTTPResponse handleRequest(APIGatewayV2HTTPEvent event, Context context) {
+		LambdaLogger logger = context.getLogger();
+		String path = event.getRequestContext().getHttp().getPath();
+		String method = event.getRequestContext().getHttp().getMethod();
+		logger.log("Request Method: " + method + " and Request path: " + path);
+
+		if (OK_METHOD.equals(method) && OK_PATH.equals(path)) {
+			return getWeather();
+		} else {
+			return badRequestResponse(method, path);
 		}
-	
-		return resultMap;
+	}
+
+	private APIGatewayV2HTTPResponse getWeather() {
+		String weather = OpenMeteoApi.getWeatherForecast();
+		if (weather != null) {
+			return getResponse(SC_OK, weather);
+		} else {
+			return getResponse(SC_INTERNAL_SERVER_ERROR, "Weather not available!");
+		}
+	}
+
+	private APIGatewayV2HTTPResponse badRequestResponse(String method, String path) {
+		return getResponse(SC_NOT_FOUND, "No resource exists with method "
+			+ method + " and path " + path);
+	}
+
+	private APIGatewayV2HTTPResponse getResponse(int statusCode, String body) {
+		return APIGatewayV2HTTPResponse.builder()
+		.withStatusCode(statusCode)
+		.withHeaders(responseHeaders)
+		.withBody(body)
+		.build();
 	}
 }
