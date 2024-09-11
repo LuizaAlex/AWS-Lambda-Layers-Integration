@@ -32,9 +32,7 @@
             <version>${syndicate.java.plugin.version}</version>
         </dependency>
 
-
-    
-        <!--Custom dependencies-->
+         <!--Custom dependencies-->
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>

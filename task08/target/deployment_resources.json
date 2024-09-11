@@ -17,6 +17,7 @@
     "event_sources" : [ ],
     "env_variables" : { },
     "publish_version" : false,
+    "layers" : [ "open-meteo-layer" ],
     "logs_expiration" : "${logs_expiration}",
     "snap_start" : "None",
     "url_config" : {
@@ -29,7 +30,7 @@
     "runtimes" : [ "java11" ],
     "resource_type" : "lambda_layer",
     "deployment_package" : "open-meteo-layer-assembly.zip",
-    "libraries" : [ "lib/httpclient-4.5.13.jar", "lib/httpcore-4.4.14.jar" ],
+    "libraries" : [ "libs/open-meteo-api.jar" ],
     "architectures" : [ "arm64" ]
   }
 }
