@@ -28,7 +28,7 @@ import com.task08.OpenMeteoClient;
 )
 @LambdaLayer(
     layerName = "open-meteo-layer",
-    libraries = {"lib/httpclient-4.5.13.jar", "lib/httpcore-4.4.14.jar"}, 
+    libraries = {"libs/open-meteo-api.jar"}, 
     runtime = DeploymentRuntime.JAVA11,
     architectures = {Architecture.ARM64},
     artifactExtension = ArtifactExtension.ZIP
