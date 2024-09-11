@@ -31,12 +31,5 @@
       "lambda-basic-execution"
     ],
     "resource_type": "iam_role"
-  },
-  "LambdaLayer": {
-    "layerName": "open-meteo-layer",
-    "resource_type": "lambda_layer",
-    "libraries": ["task08/lib/httpclient-4.5.13.jar", "task08/lib/httpcore-4.4.14.jar"],
-    "runtime": "java11",
-    "artifactExtension": "zip"
   }
 }
